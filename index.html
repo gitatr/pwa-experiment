@@ -1,1 +1,60 @@
-<h1>PWA</h1>
+
+<head>
+  <title>Minimal PWA</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="icon" href="/e.png" type="image/png" />
+</head>
+
+<body>
+  <div class="revision">Revision 8</div>
+  <img src="pwa-fonts.png">
+  <div class="main-text">
+    Minimal PWA, open Console for more!
+  </div>
+  <button type="button" id="notifications">Notification Permissions</button>
+  <div class="network-message">
+    Network:
+    <span id="network-status" class="">Good</span>
+  </div>
+  <script type="text/javascript">
+    if (navigator.serviceWorker != null) {
+      navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log('Registered events at scope: ', registration.scope);
+      });
+    }
+
+    fetch('./data.json')
+
+    var statusEl = document.querySelector('#network-status')
+    if (!navigator.onLine) {
+      statusEl.classList = ['is-offline']
+      statusEl.innerText = 'Offline'
+    }
+
+    function randomNotification() {
+  const randomItem = Math.floor(Math.random() * games.length);
+  const notifTitle = games[randomItem].name;
+  const notifBody = `Created by ${games[randomItem].author}.`;
+  const notifImg = `data/img/${games[randomItem].slug}.jpg`;
+  const options = {
+    body: notifBody,
+    icon: notifImg,
+  };
+  new Notification(notifTitle, options);
+  setTimeout(randomNotification, 30000);
+}
+
+    const button = document.getElementById('notifications');
+button.addEventListener('click', () => {
+  Notification.requestPermission().then((result) => {
+    if (result === 'granted') {
+      randomNotification();
+    }
+  });
+})
+
+  </script>
+</body>
